@@ -16,7 +16,9 @@
                     <th>Nombre</th>
                     <th>Apellido</th>
                     <th>E-mail</th>
+                    <th>Clase/Salón</th>
                     <th>Fecha creacion</th>
+                    <th>Fecha actualización</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -26,9 +28,12 @@
                     <td>{{user.first_name}}</td>
                     <td>{{user.last_name}}</td>
                     <td>{{user.email}}</td>
+                    <td>{{user.classroom.name}}</td>
                     <td>{{user.created_at}}</td>
+                    <td>{{user.updated_at}}</td>
                     <td>
                         <a href="#">Borrar</a>
+                        <a href="/show/{{user.id}}">Ver Usuario</a>
                     </td>
                 </tr>
                 {% endfor %}

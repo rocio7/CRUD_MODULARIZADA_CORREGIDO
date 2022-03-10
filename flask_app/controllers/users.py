@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect
 
 from flask_app import app
 from flask_app.models.users import User
+from flask_app.models.classrooms import Classroom
 
 @app.route('/')
 def index():
@@ -10,10 +11,19 @@ def index():
 
 @app.route('/new')
 def new():
-    return render_template("new.html")
+    classrooms = Classroom.muestra_salones()
+    return render_template("new.html", classrooms=classrooms)
 
 @app.route('/create', methods=['POST'])
 def create():
     print(request.form)
     User.guardar(request.form)
     return redirect('/')
+
+@app.route('/show/<int:id>')
+def show(id):
+    data = {
+        "id": id
+    }
+    user = User.mostrar(data)
+    return render_template("show.html", user=user)
