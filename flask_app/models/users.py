@@ -1,6 +1,8 @@
 from flask_app.config.mysqlconnection import connectToMySQL
 from .classrooms import Classroom
 
+from .hobbies import Hobbie
+
 class User:
     def __init__(self, data):
         self.id = data['id']
@@ -13,11 +15,12 @@ class User:
 
         classroom = Classroom.muestra_salon_2(data['classroom_id'])
         self.classroom = classroom
+        self.hobbies = []
 
     @classmethod
     def muestra_usuarios(cls):
         query = "SELECT * FROM users"
-        results = connectToMySQL('esquema_usuarios').query_db(query)
+        results = connectToMySQL('esquema_usuarios1').query_db(query)
         # [
         #     {"id": "1","first_name":"Cynthia", "last_name": "Apellido", "email":"c@cd.com", "created_at": "2002-02", "updated_at"}
         # ]
@@ -42,17 +45,46 @@ class User:
     def guardar(cls, formulario):
         #data = {"first_name": "C", "last_name": "X", "email": "c@cd.com"}
         query = "INSERT INTO users (first_name, last_name, email, classroom_id) VALUES (%(first_name)s, %(last_name)s, %(email)s, %(classroom_id)s)"
-        result = connectToMySQL('esquema_usuarios').query_db(query, formulario)
+        result = connectToMySQL('esquema_usuarios1').query_db(query, formulario)
         return result
+
+    @classmethod
+    def borrar(cls,formulario):
+            #formulario= id :1
+            query = "DELETE FROM users WHERE id = %(id)s"
+            result = connectToMySQL('esquema_usuarios1').query_db(query,formulario)
+            return result
     
     @classmethod
     def mostrar(cls, formulario):
         #formulario = {"id": "1"}
-        query = "SELECT * FROM users WHERE id = %(id)s"
-        result = connectToMySQL('esquema_usuarios').query_db(query, formulario)
+        query = "SELECT * FROM users LEFT JOIN users_has_hobbies ON users.id = user_id LEFT JOIN hobbies ON hobbies.id =hobbie_id WHERE users.id = %(id)s"
+        result = connectToMySQL('esquema_usuarios1').query_db( query, formulario)
         # [
         #     {'3','Juana','De Arco','juana@codingdojo.com','2022-03-09 14:50:58','2022-03-09 14:50:58'}
         # ]
         usr = result[0]
         user = cls(usr)
+        
+        for h in result:
+            hobbie_data = {
+                "id" : h ['hobbies.id'],
+                "name": h ['name'],##¿Porque no va como 'hobbies.name'??¡¡
+                "created_at": h ['hobbies.created_at'],
+                "updated_at": h ['hobbies.updated_at']
+
+            }
+
+            hobbie= Hobbie (hobbie_data)
+            user.hobbies.append(hobbie)
+
         return user
+    
+    @classmethod 
+    def actualizar(cls,formulario):
+        #formulario = {"id":1, first_name":"c" "last_name":"X","email": "cd@com"}
+        query= "UPDATE users SET first_name=%(first_name)s, last_name=%(last_name)s, email=%(email)s, classroom_id=%(classroom_id)s WHERE id=%(id)s"
+        result=connectToMySQL('esquema_usuarios1').query_db(query,formulario)
+        print(result)
+        return result
+

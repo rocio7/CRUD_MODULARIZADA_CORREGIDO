@@ -11,7 +11,7 @@ class Classroom:
     @classmethod
     def muestra_salones(cls):
         query = "SELECT * FROM classrooms"
-        result = connectToMySQL('esquema_usuarios').query_db(query)
+        result = connectToMySQL('esquema_usuarios1').query_db(query)
         classrooms = []
         for c in result:
             classrooms.append(cls(c))
@@ -21,7 +21,7 @@ class Classroom:
     def muestra_salon(cls, data):
         #data = {"id": "1"}
         query = "SELECT * FROM classrooms WHERE id = %(id)s"
-        result = connectToMySQL('esquema_usuarios').query_db(query, data)
+        result = connectToMySQL('esquema_usuarios1').query_db(query, data)
         # [
         #    {1, Python, 2022-03-10, 2022-03-10}
         # ]
@@ -33,7 +33,7 @@ class Classroom:
     def muestra_salon_2(cls, id):
         data = {"id": id}
         query = "SELECT * FROM classrooms WHERE id = %(id)s"
-        result = connectToMySQL('esquema_usuarios').query_db(query, data)
+        result = connectToMySQL('esquema_usuarios1').query_db(query, data)
         # [
         #    {1, Python, 2022-03-10, 2022-03-10}
         # ]
